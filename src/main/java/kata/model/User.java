@@ -28,10 +28,10 @@ public class User {
         
     }
     
-    public User(String login,  boolean enabled) {
+    public User(String login,  boolean enabled, UserAuthority authority) {
         this.login = login;
         this.enabled = enabled;
-        
+        this.authority = authority;
     }
     
     public String getLogin() {
@@ -81,6 +81,8 @@ public class User {
         return true;
     }
     
-    
+    public boolean isAdmin() {
+        return authority.getUserRole().equals(UserRole.ROLE_ADMIN);
+    }
 
 }

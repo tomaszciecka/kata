@@ -101,12 +101,16 @@ public class OrganizationService {
         return activationRequestRepository.findByActivatedIsFalse();
     }
 
-    public void activateOrganization(Long activationRequestId) {
-        ActivationRequest activationRequest = activationRequestRepository.findOne(activationRequestId);
-        activationRequest.getOrganization().setActive(true);
-        activationRequest.setActivated(true);
-        activationRequestRepository.save(activationRequest);
-        
+    public void activateOrganization(Long activationRequestId, Long adminId) throws AuthorizationException {
+        User admin = userRepository.findOne(adminId);
+        if(admin.isAdmin()) {
+            ActivationRequest activationRequest = activationRequestRepository.findOne(activationRequestId);
+            activationRequest.getOrganization().setActive(true);
+            activationRequest.setActivated(true);
+            activationRequestRepository.save(activationRequest);
+        } else {
+            throw new AuthorizationException("User unauthorized to do this operation");
+        }
     }
     
     public void createNewGrantRequest(User newRepresentative, Organization organization) {

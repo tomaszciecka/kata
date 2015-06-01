@@ -8,6 +8,7 @@ import kata.model.ActivationRequest;
 import kata.model.Organization;
 import kata.model.RoleGrantRequest;
 import kata.model.User;
+import kata.model.UserRole;
 import kata.repository.ActivationRequestRepository;
 import kata.repository.OrganizationRepository;
 import kata.repository.RoleGrantRequestRepository;
@@ -115,9 +116,10 @@ public class OrganizationServiceTest {
     
     @Test
     public void activatesOrganization() throws AuthorizationException {
+        User admin = user().withLogin("admin").withRole(UserRole.ROLE_ADMIN).enabled(true).build(userRepository);
         Organization organization = organization().withName("OrgTest").withOwner(owner).isActive(false).build(organizationRepository);
         ActivationRequest activationRequest = organizationService.requestToActivateOrganization(organization.getId(), owner.getId());
-        organizationService.activateOrganization(activationRequest.getId());
+        organizationService.activateOrganization(activationRequest.getId(), admin.getId());
         assertThat(organizationRepository.findByName("OrgTest").isActive()).isTrue();
     }
 }

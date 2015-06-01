@@ -88,22 +88,22 @@ public class OrganizationService {
     public ActivationRequest requestToActivateOrganization(Long organizationId, Long ownerId) throws AuthorizationException {
         User owner = userRepository.findOne(ownerId);
         Organization organization = organizationRepository.findOne(organizationId);
-        if (Objects.equals(organization.getOwner(), owner)) {
+        if (organization.isOwner(owner)) {
             ActivationRequest activationRequest = new ActivationRequest(organization);
             return activationRequestRepository.save(activationRequest);
         } else {
             throw new AuthorizationException("User unauthorized to do this operation");
         }
-        
+
     }
-    
+
     public Iterable<ActivationRequest> getNonActivatedActivationRequests() {
         return activationRequestRepository.findByActivatedIsFalse();
     }
 
     public void activateOrganization(Long activationRequestId, Long adminId) throws AuthorizationException {
         User admin = userRepository.findOne(adminId);
-        if(admin.isAdmin()) {
+        if (admin.isAdmin()) {
             ActivationRequest activationRequest = activationRequestRepository.findOne(activationRequestId);
             activationRequest.getOrganization().setActive(true);
             activationRequest.setActivated(true);
@@ -112,18 +112,20 @@ public class OrganizationService {
             throw new AuthorizationException("User unauthorized to do this operation");
         }
     }
-    
-    public void createNewGrantRequest(User newRepresentative, Organization organization) {
+
+    private void createNewGrantRequest(User newRepresentative, Organization organization) {
         RoleGrantRequest roleGrantRequest = new RoleGrantRequest(newRepresentative, organization);
         roleGrantRequestRepository.save(roleGrantRequest);
     }
 
-    public void revokeRole(Long ownerId, Long userId, Long organizationId) {
+    public void revokeRole(Long ownerId, Long userId, Long organizationId) throws AuthorizationException {
         Organization organization = organizationRepository.findOne(organizationId);
         User owner = userRepository.findOne(ownerId);
         User user = userRepository.findOne(userId);
         if (organization.isOwner(owner)) {
             organization.removeRepresentative(user);
+        } else {
+            throw new AuthorizationException("User unauthorized to do this operation");
         }
     }
 }

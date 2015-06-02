@@ -106,7 +106,7 @@ public class OrganizationServiceTest {
     }
 
     @Test
-    public void revokesRole() {
+    public void revokesRole() throws AuthorizationException {
         User representative = user().withLogin("representative").enabled(true).build(userRepository);
         Organization organization = organization().withName("OrgTest").withOwner(owner).isActive(true).withGrantLimit(1)
                 .withMembers(representative).withRepresentatives(representative).build(organizationRepository);

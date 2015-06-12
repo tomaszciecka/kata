@@ -97,7 +97,9 @@ public class Organization {
     }
 
     public void addRepresentative(User member) {
-        getRepresentatives().add(member);
+        if (isMember(member) && !isOwner(member)) {
+            getRepresentatives().add(member);
+        }
     }
 
     public Integer getSignLimit() {
@@ -117,11 +119,11 @@ public class Organization {
     }
 
     public boolean isMember(User member) {
-        return members.contains(member);
+        return getMembers().contains(member);
     }
 
     public boolean isRepresentative(User representative) {
-        return representatives.contains(representative);
+        return getRepresentatives().contains(representative);
     }
 
     @Override

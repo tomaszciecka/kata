@@ -51,7 +51,7 @@ public class DocumentServiceTest {
     public void init() {
         owner = user().withLogin("test").build(userRepository);
         representative = user().withLogin("representative").enabled(true).build(userRepository);
-        organization = organization().withName("OrgTest").withOwner(owner).withRepresentatives(representative).withSignLimit(SIGN_LIMIT).build(organizationRepository);
+        organization = organization().withName("OrgTest").withOwner(owner).withMembers(representative).withRepresentatives(representative).withSignLimit(SIGN_LIMIT).build(organizationRepository);
     }
 
     @Test

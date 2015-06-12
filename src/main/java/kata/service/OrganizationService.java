@@ -60,12 +60,10 @@ public class OrganizationService {
         Organization organization = organizationRepository.findOne(organizationId);
         if (organization.isOwner(owner)) {
             User newRepresentative = userRepository.findOne(memberId);
-            if (organization.isMember(newRepresentative) && !organization.isOwner(newRepresentative)) {
-                if (!organization.isActive()) {
-                    organization.addRepresentative(newRepresentative);
-                } else {
-                    createNewGrantRequest(newRepresentative, organization);
-                }
+            if (!organization.isActive()) {
+                organization.addRepresentative(newRepresentative);
+            } else {
+                createNewGrantRequest(newRepresentative, organization);
             }
         }
         return organization;
@@ -79,8 +77,8 @@ public class OrganizationService {
         if (roleGrantRequest == null) {
             throw new RoleGrantException("Role grant was not requested by owner");
         }
-        if (organization.newRepresentativeCanBeAdded(representative, newRepresentative) && roleGrantRequest.canBeGranted(representative)) {
-            roleGrantRequest.grant(representative);
+        if (organization.newRepresentativeCanBeAdded(representative, newRepresentative) && roleGrantRequest.canBeGrantedBy(representative)) {
+            roleGrantRequest.grantBy(representative);
             if (roleGrantRequest.isGranted()) {
                 organization.addRepresentative(newRepresentative);
             }

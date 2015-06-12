@@ -21,7 +21,7 @@ public class RoleGrantRequest {
     private Long id;
     
     @OneToMany
-    private Collection<User> representatives;
+    private Collection<User> grantingRepresentatives;
     
     @OneToOne
     private User user;
@@ -36,25 +36,25 @@ public class RoleGrantRequest {
     }
     
     public RoleGrantRequest(User user, Organization organization) {
-        this.representatives = new ArrayList<User>();
+        this.grantingRepresentatives = new ArrayList<User>();
         this.granted = false;
         this.user = user;
         this.organization = organization;
     }
 
     public RoleGrantRequest(ArrayList<User> representatives, User user, boolean granted, Organization organization) {
-        this.representatives = representatives;
+        this.grantingRepresentatives = representatives;
         this.user = user;
         this.granted = granted;
         this.organization = organization;
     }
 
     
-    public Collection<User> getRepresentatives() {
-        if(representatives == null) {
-            representatives = new ArrayList<User>();
+    public Collection<User> getGrantingRepresentatives() {
+        if(grantingRepresentatives == null) {
+            grantingRepresentatives = new ArrayList<User>();
         }
-        return representatives;
+        return grantingRepresentatives;
     }
 
     
@@ -68,13 +68,13 @@ public class RoleGrantRequest {
     }
     
         
-    public boolean canBeGranted(User user) {
-        return !isGranted() && !representatives.contains(user);
+    public boolean canBeGrantedBy(User user) {
+        return !isGranted() && !getGrantingRepresentatives().contains(user);
     }
 
-    public void grant(User representative) {
-        representatives.add(representative);
-        if(getRepresentatives().size() >= organization.getGrantLimit()) {
+    public void grantBy(User representative) {
+        getGrantingRepresentatives().add(representative);
+        if(getGrantingRepresentatives().size() >= organization.getGrantLimit()) {
             this.granted = true;
         }
     }

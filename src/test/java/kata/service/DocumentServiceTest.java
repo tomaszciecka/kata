@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @WebAppConfiguration
 public class DocumentServiceTest {
-    
+
     private Integer SIGN_LIMIT = 1;
 
     @Autowired
@@ -51,7 +51,13 @@ public class DocumentServiceTest {
     public void init() {
         owner = user().withLogin("test").build(userRepository);
         representative = user().withLogin("representative").enabled(true).build(userRepository);
-        organization = organization().withName("OrgTest").withOwner(owner).withMembers(representative).withRepresentatives(representative).withSignLimit(SIGN_LIMIT).build(organizationRepository);
+        organization = organization()
+                .withName("OrgTest")
+                .withOwner(owner)
+                .withMembers(representative)
+                .withRepresentatives(representative)
+                .withSignLimit(SIGN_LIMIT)
+                .build(organizationRepository);
     }
 
     @Test
@@ -63,7 +69,9 @@ public class DocumentServiceTest {
     @Test
     public void signsDocument() {
         Document document = document().withName("DocTest").withOwner(owner).fromOrganization(organization).build(documentRepository);
+        
         documentService.signDocument(document.getId(), representative.getId());
+        
         assertThat(documentRepository.findByName("DocTest").getSigners()).contains(representative);
     }
 }

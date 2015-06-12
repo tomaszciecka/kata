@@ -2,9 +2,6 @@ package kata.builder;
 
 import java.util.Arrays;
 import java.util.Collection;
-
-
-
 import kata.model.Document;
 import kata.model.Organization;
 import kata.model.User;
@@ -53,7 +50,10 @@ public class DocumentBuilder extends BaseBuilder<Document, DocumentBuilder> {
     
     @Override
     public Document build() {
-        return new Document(owner, organization, signers, confirmed, name);
+        Document document = new Document(organization, owner, name);
+        document.setConfirmed(confirmed);
+        
+        return document;
     }
 
     

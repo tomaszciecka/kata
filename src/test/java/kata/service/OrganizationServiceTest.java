@@ -3,7 +3,9 @@ package kata.service;
 import static kata.builder.UserBuilder.user;
 import static kata.builder.OrganizationBuilder.organization;
 import kata.KataApplication;
+import kata.dto.LimitDto;
 import kata.exception.AuthorizationException;
+import kata.exception.RoleGrantException;
 import kata.model.ActivationRequest;
 import kata.model.Organization;
 import kata.model.RoleGrantRequest;
@@ -56,7 +58,7 @@ public class OrganizationServiceTest {
 
     @Test
     public void registersNewOrganization() {
-        Organization newOrganization = organizationService.registerOrganization("NewOrgTest", owner.getId(), 0, 0);
+        Organization newOrganization = organizationService.registerOrganization("NewOrgTest", owner.getId(), new LimitDto(0, 0));
         assertThat(newOrganization).isEqualTo(organizationService.getOrganizationByName("NewOrgTest"));
     }
 
@@ -95,7 +97,7 @@ public class OrganizationServiceTest {
     }
 
     @Test
-    public void grantsRoleRepresentative() {
+    public void grantsRoleRepresentative() throws RoleGrantException {
         User representative = user().withLogin("representative").enabled(true).build(userRepository);
         User newRepresentative = user().withLogin("member").enabled(true).build(userRepository);
         Organization organization = organization().withName("OrgTest").withOwner(owner).isActive(true).withGrantLimit(1)

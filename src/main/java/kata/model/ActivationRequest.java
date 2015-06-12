@@ -17,7 +17,7 @@ public class ActivationRequest {
     
     @OneToOne
     @JoinColumn(name = "organization_id")
-    Organization organization;
+    private Organization organization;
     
     private boolean activated;
     

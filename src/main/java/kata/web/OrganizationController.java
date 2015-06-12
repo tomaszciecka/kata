@@ -1,5 +1,6 @@
 package kata.web;
 
+import kata.dto.LimitDto;
 import kata.exception.AuthorizationException;
 import kata.service.OrganizationService;
 
@@ -19,8 +20,8 @@ public class OrganizationController {
     
     @RequestMapping(value = "", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public Object registerOrganization(@RequestBody String organizationName, Long ownerId, Integer grantLimit, Integer signLimit) {
-        return organizationService.registerOrganization(organizationName, ownerId, grantLimit, signLimit);
+    public Object registerOrganization(@RequestBody String organizationName, Long ownerId, LimitDto limitDto) {
+        return organizationService.registerOrganization(organizationName, ownerId, limitDto);
     }
 
     @RequestMapping(value = "/newMember", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")

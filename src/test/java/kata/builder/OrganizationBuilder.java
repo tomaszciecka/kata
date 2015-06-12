@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import kata.dto.LimitDto;
 import kata.model.Organization;
 import kata.model.User;
 
@@ -65,7 +66,14 @@ public class OrganizationBuilder extends BaseBuilder<Organization, OrganizationB
     
     @Override
     public Organization build() {
-        Organization organization = new Organization(name, owner, members, representatives, active, grantLimit, signLimit);
+        Organization organization = new Organization(owner, name, new LimitDto(grantLimit, signLimit));
+        organization.setActive(active);
+        for(User member : members) {
+            organization.addMember(member);
+        }
+        for(User representative : representatives) {
+            organization.addRepresentative(representative);
+        }
         return organization;
     }
 

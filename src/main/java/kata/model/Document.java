@@ -42,14 +42,6 @@ public class Document {
         this.name = name;
     }
 
-    public Document(User owner, Organization organization, Collection<User> signers, boolean confirmed, String name) {
-        this.confirmed = confirmed;
-        this.organization = organization;
-        this.owner = owner;
-        this.name = name;
-        this.signers = signers;
-    }
-
     public Organization getOrganization() {
         return organization;
     }

@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import kata.dto.LimitDto;
+
 
 @Entity
 @Table(name = "organizations")
@@ -48,23 +50,12 @@ public class Organization {
 
     }
 
-    public Organization(User owner, String name, Integer grantLimit, Integer signLimit) {
+    public Organization(User owner, String name, LimitDto limitDto) {
         this.owner = owner;
         this.name = name;
         this.active = false;
-        this.grantLimit = grantLimit;
-        this.signLimit = signLimit;
-    }
-
-    public Organization(String name2, User owner2, Collection<User> members2, Collection<User> representatives2, boolean active,
-            Integer grantLimit, Integer signLimit) {
-        this.owner = owner2;
-        this.name = name2;
-        this.active = active;
-        this.members = members2;
-        this.representatives = representatives2;
-        this.grantLimit = grantLimit;
-        this.signLimit = signLimit;
+        this.grantLimit = limitDto.getGrantLimit();
+        this.signLimit = limitDto.getSignLimit();
     }
 
     public Integer getGrantLimit() {
@@ -102,17 +93,11 @@ public class Organization {
     }
 
     public void addMember(User member) {
-        if (members == null) {
-            members = new ArrayList<User>();
-        }
-        members.add(member);
+        getMembers().add(member);
     }
 
     public void addRepresentative(User member) {
-        if (representatives == null) {
-            representatives = new ArrayList<User>();
-        }
-        representatives.add(member);
+        getRepresentatives().add(member);
     }
 
     public Integer getSignLimit() {

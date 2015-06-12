@@ -1,8 +1,11 @@
 package kata.service;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
+import kata.dto.LimitDto;
 import kata.exception.AuthorizationException;
+import kata.exception.RoleGrantException;
 import kata.model.ActivationRequest;
 import kata.model.Organization;
 import kata.model.RoleGrantRequest;
@@ -40,15 +43,15 @@ public class OrganizationService {
     public Organization addNewMember(Long userId, Long ownerId, Long organizationId) {
         User owner = userRepository.findOne(ownerId);
         Organization organization = organizationRepository.findOne(organizationId);
-        if (Objects.equals(organization.getOwner(), owner)) {
+        if (organization.isOwner(owner)) {
             User member = userRepository.findOne(userId);
             organization.addMember(member);
         }
         return organization;
     }
 
-    public Organization registerOrganization(String organizationName, Long ownerId, Integer grantLimit, Integer signLimit) {
-        Organization organization = new Organization(userRepository.findOne(ownerId), organizationName, grantLimit, signLimit);
+    public Organization registerOrganization(String organizationName, Long ownerId, LimitDto limitDto) {
+        Organization organization = new Organization(userRepository.findOne(ownerId), organizationName, limitDto);
         return organizationRepository.save(organization);
     }
 
@@ -68,13 +71,13 @@ public class OrganizationService {
         return organization;
     }
 
-    public Organization grantRepresentative(Long representativeId, Long organizationId, Long newRepresentativeId) {
+    public Organization grantRepresentative(Long representativeId, Long organizationId, Long newRepresentativeId) throws RoleGrantException {
         Organization organization = organizationRepository.findOne(organizationId);
         User representative = userRepository.findOne(representativeId);
         User newRepresentative = userRepository.findOne(newRepresentativeId);
         RoleGrantRequest roleGrantRequest = roleGrantRequestRepository.findByUser(newRepresentative);
         if (roleGrantRequest == null) {
-            return organization;
+            throw new RoleGrantException("Role grant was not requested by owner");
         }
         if (organization.newRepresentativeCanBeAdded(representative, newRepresentative) && roleGrantRequest.canBeGranted(representative)) {
             roleGrantRequest.grant(representative);

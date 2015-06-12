@@ -30,7 +30,7 @@ public class RoleGrantRequest {
 
     @ManyToOne
     @JoinColumn(name = "organization_id")
-    Organization organization;
+    private Organization organization;
     
     RoleGrantRequest() {
     }
